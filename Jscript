@@ -1,0 +1,23 @@
+# Import the ActiveDirectory module
+Import-Module ActiveDirectory
+# Set the path to the CSV file
+$csvPath = “C:\Path\To\CSV\File.csv”
+# Read the CSV file and loop through each row
+Import-Csv $csvPath | ForEach-Object {
+    # Store the user information in variables
+    $firstName = $_.FirstName
+    $lastName = $_.LastName
+    $username = $_.Username
+    $password = $_.Password
+    $email = $_.Email
+    # Create a new user account
+    New-ADUser `
+        -GivenName $firstName `
+        -Surname $lastName `
+        -SamAccountName $username `
+        -AccountPassword (ConvertTo-SecureString $password -AsPlainText -Force) `
+        -EmailAddress $email `
+        -Enabled $true `
+        -PasswordNeverExpires $true `
+        -Path “OU=Users,DC=example,DC=com”
+}
